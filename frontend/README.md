@@ -1,1 +1,1 @@
-React Project
+React Project for smart-contracts
