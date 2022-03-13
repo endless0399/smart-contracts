@@ -18,6 +18,7 @@ npm install --save-dev hardhat
 ```
 npx hardhat run scripts/deploy.js
 cd frontend
+npm install
 npm run start
 ```
 

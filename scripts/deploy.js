@@ -5,9 +5,10 @@ async function main() {
     console.log("Deploying contracts with account : ", deployer.address);
     console.log("Account balance : ", (await deployer.getBalance()).toString());
 
-    console.log(deployer);
+    const network = await ethers.provider.getNetwork();
     const Token = await ethers.getContractFactory("Token");
     const token = await Token.deploy();
+    console.log("Deployed Token contract on : ", network.name);
     console.log("Token address : ", token.address);
     saveFrontendFiles(token);
 }
