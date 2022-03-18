@@ -2,8 +2,8 @@
 pragma solidity ^0.8.0;
 
 contract Token {
-    string private name = "HelloWorld";
-    string private symbol = "HWT";
+    string public name = "HelloWorld";
+    string public symbol = "HWT";
 
     uint256 public totalSupply = 1000000000000000;
     address private ownerAddress; 
