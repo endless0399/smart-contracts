@@ -5,7 +5,7 @@ import { ethers } from "ethers";
 import TokenArtifact from "../contracts/Token.json";
 import contractAddress from "../contracts/contract-address.json";
 
-import { NoWalletDetected } from "./NoWalletDetected"
+import { NoWalletDetected } from "./util/NoWalletDetected"
 import { ConnectWallet } from "./ConnectWallet"
 import { Loading } from "./util/Loading"
 import { Burn } from "./Burn"
@@ -31,7 +31,10 @@ export class Dapp extends React.Component {
 
     componentDidMount() {
         const savedAddress = localStorage.getItem("selectedAddress");
-        if(savedAddress && savedAddress !== "undefined") this._initialize(savedAddress);
+        if(savedAddress && savedAddress !== "undefined") {
+            this.setState({ selectedAddress: savedAddress });
+            this._connectWallet();
+        }
     }
     
     render() {
@@ -74,7 +77,7 @@ export class Dapp extends React.Component {
     async _connectWallet(){
         // Get wallet address
         const [ selectedAddress ] = await window.ethereum.request({ method: 'eth_requestAccounts' });
-
+        
         // Check network
         if(!this._checkNetwork()) {
             return;
