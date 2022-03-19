@@ -1,8 +1,6 @@
 import React from "react";
 import { ErrorMessage } from "./util/ErrorMessage";
-import { Dapp } from "./Dapp";
-
-import { Loading } from "./util/Loading";
+import { NoWalletDetected } from "./util/NoWalletDetected";
 
 export class Transactions extends React.Component{
     constructor(props) {
@@ -21,12 +19,12 @@ export class Transactions extends React.Component{
     render() {
         // No Wallet Detected
         if (window.ethereum === undefined) {
-            return <Dapp />;
+            return <NoWalletDetected />
         }
 
         // Connect Wallet
         if (!this.state.selectedAddress) {
-            return <Dapp />;
+            return <ErrorMessage message={"Please connect an account first"}/>;
         }
         
         return(
