@@ -7,8 +7,9 @@ import contractAddress from "../contracts/contract-address.json";
 
 import { NoWalletDetected } from "./NoWalletDetected"
 import { ConnectWallet } from "./ConnectWallet"
-import { Loading } from "./Loading"
+import { Loading } from "./util/Loading"
 import { Burn } from "./Burn"
+import { Transfer } from "./Transfer"
 
 const RINKEBY_NETWORK_ID = '4'
 
@@ -16,7 +17,7 @@ export class Dapp extends React.Component {
     constructor(props) {
         super(props);
         this.initialState = {
-            selectedAddress: this.props.selectedAddress,
+            selectedAddress: undefined,
             balance: undefined,
             networkError: undefined,
             tokenData: undefined
@@ -26,6 +27,11 @@ export class Dapp extends React.Component {
 
     componentWillUnmount() {
         this._stopPollingData();
+    }
+
+    componentDidMount() {
+        const savedAddress = localStorage.getItem("selectedAddress");
+        if(savedAddress && savedAddress !== "undefined") this._initialize(savedAddress);
     }
     
     render() {
@@ -53,18 +59,21 @@ export class Dapp extends React.Component {
         return (
             <div className="container p-3">
                 <div className="row">
-                    <p>Connected to Wallet : {this.state.selectedAddress}<br/>
-                    Your Balance : {this.state.balance.toNumber()} {this.state.tokenData.symbol}</p>
+                    <h5>Connected to Wallet : {this.state.selectedAddress}<br/>
+                    Your Balance : {this.state.balance.toNumber()} {this.state.tokenData.symbol}</h5>
+                </div>
+                <div className="row">
+                    <Transfer tokenContract = {this._token} selectedAddress = {this.state.selectedAddress} />
                 </div>
                 <div className="row">
                     <Burn tokenContract = {this._token} selectedAddress = {this.state.selectedAddress} />
                 </div>
             </div>
-        )
+        );
     };
     async _connectWallet(){
         // Get wallet address
-        const [ selectedAddress ] = await window.ethereum.request({ method: 'eth_requestAccounts' })
+        const [ selectedAddress ] = await window.ethereum.request({ method: 'eth_requestAccounts' });
 
         // Check network
         if(!this._checkNetwork()) {
@@ -95,6 +104,7 @@ export class Dapp extends React.Component {
         this._initializeEthers();
         this._getTokenData();
         this._startPollingData();
+        localStorage.setItem("selectedAddress", userAddress);
     }
 
     // Initialize Smart Contract

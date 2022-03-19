@@ -1,8 +1,8 @@
 import React from "react";
 
 import { Form, Button } from "react-bootstrap"
-import { Loading } from "./Loading"
-import { ErrorMessage } from "./ErrorMessage";
+import { Loading } from "./util/Loading"
+import { ErrorMessage } from "./util/ErrorMessage";
 
 export class Burn extends React.Component {
     constructor(props) {
@@ -30,12 +30,12 @@ export class Burn extends React.Component {
                         <ErrorMessage message={this.state.burnError} dismiss={this._dismissError} />
                     </div>
                 </div>
-            )
+            );
         }
 
         // Burning
         if(this.state.isBurning) {
-            return <Loading />
+            return <Loading />;
         }
 
         return (
@@ -43,11 +43,11 @@ export class Burn extends React.Component {
                 <Form.Group className="mb-2" controlId="formBasicNumber">
                     <Form.Control type="number" placeholder="Enter amount to burn" onChange={this._handleChange}/>
                 </Form.Group>
-                <div className="text-center">
+                <div className="text-center mb-3">
                     <Button variant="dark" type="submit">Burn</Button>
                 </div>
             </Form>
-        )
+        );
     }
 
     _handleChange = (event) => {
@@ -60,14 +60,15 @@ export class Burn extends React.Component {
     }
 
     async _burn(amount) {
-        this.setState({ isBurning: true })
+        this.setState({ isBurning: true });
         try {
             await this._token.burn(amount);
         } catch(error) {
             if(error.error) error = error.error;
             this.setState ({ burnError: "Encountered Error : " + error.message });
+        } finally {
+            this.setState({ isBurning: false });
         }
-        this.setState({ isBurning: false })
     }
 
     _dismissError = () => {
